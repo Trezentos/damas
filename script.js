@@ -32,7 +32,7 @@ class Piece {
         let moveLeft = 0, playerTwoTiles = 0;
         
         (this.y % 2 === 1) ? moveLeft = TILE_WIDTH * 1  : moveLeft = 0;
-        
+
         if (this.player === '2') {
             playerTwoTiles = 100
             ctx.fillStyle = 'brown';
@@ -48,9 +48,9 @@ class Piece {
     }
 }
 
-function drawTableAndPieces() {
+function drawTable() {
     
-    let counter = 0, jumpTiles = 0;
+    let counter = 0;
     for (let i=0; i<8; i++){
         for (let j=0; j<8; j++){
             ctx.beginPath();
@@ -64,8 +64,13 @@ function drawTableAndPieces() {
         counter++;
     }
 
+    
+}
+
+function initPieces() {
     let pieces = [];
     let player = '1';
+    jumpTiles = 0;
 
     for(let y=0; y<6; y++){
         if (y === 3) {
@@ -76,20 +81,16 @@ function drawTableAndPieces() {
         }
     }
 
-    return pieces;
-
+    pieces.forEach(piece=>{
+        piece.initPosition();
+    });
 }
 
-const pieces = drawTableAndPieces();
+drawTable();
+initPieces();
 
 function animate(){
 
-    pieces.forEach(piece=>{
-        piece.initPosition();
-    })
-
     requestAnimationFrame(animate);
 }
-
-
 animate();
