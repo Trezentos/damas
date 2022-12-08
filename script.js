@@ -11,11 +11,8 @@ class Piece {
         this.x = x;
         this.y = y;
 
-        this.tileInsidePositionX = TILE_WIDTH/2;
-        this.tileInsidePositionY = TILE_HEIGHT/2;
-
-        this.initialXPosition = this.x * TILE_WIDTH * 2;
-        this.initialYPosition = this.y * TILE_HEIGHT;
+        this.piecePositionX = this.x * TILE_WIDTH + TILE_WIDTH/2;
+        this.piecePositionY = this.y * TILE_HEIGHT + TILE_HEIGHT/2;
 
         this.alive = true;
         this.player = player;
@@ -27,25 +24,14 @@ class Piece {
 
     }
 
-    initPosition(){
+    draw(){
+        this.player === '1' ? ctx.fillStyle = 'yellow' : ctx.fillStyle = 'brown';
         ctx.beginPath();
-        let moveLeft = 0, playerTwoTiles = 0;
-        
-        (this.y % 2 === 1) ? moveLeft = TILE_WIDTH * 1  : moveLeft = 0;
-
-        if (this.player === '2') {
-            playerTwoTiles = 100
-            ctx.fillStyle = 'brown';
-        } else {
-            ctx.fillStyle = 'yellow';
-        }
-
-        ctx.arc(this.tileInsidePositionX + this.initialXPosition + moveLeft,
-                this.tileInsidePositionY + this.initialYPosition + playerTwoTiles, 
-                20, 0, Math.PI * 2);
+        ctx.arc(this.piecePositionX, this.piecePositionY, 20, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
     }
+    
 }
 
 function drawTable() {
@@ -68,29 +54,37 @@ function drawTable() {
 }
 
 function initPieces() {
-    let pieces = [];
-    let player = '1';
-    jumpTiles = 0;
-
+    let pieces = [], player = '1', jumpX = 0, jumpY = 0;
+    
     for(let y=0; y<6; y++){
+        y % 2 === 0 ? jumpX = 0 : jumpX = -1;
+
         if (y === 3) {
-            player = '2'
+            player = '2';
+            jumpY = 2;
         };
         for(let x=0; x<4; x++){
-            pieces.push(new Piece(x, y + jumpTiles, player))
+            jumpX++;
+            pieces.push(new Piece(x + jumpX, y + jumpY, player))
         }
     }
 
-    pieces.forEach(piece=>{
-        piece.initPosition();
-    });
+    return pieces;
 }
 
-drawTable();
-initPieces();
+const pieces = initPieces();
 
 function animate(){
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    drawTable();
+
+    pieces.forEach(piece=>{
+        piece.draw();
+    })
 
     requestAnimationFrame(animate);
 }
+
+
 animate();
